@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Inscription{% endblock %}
+{% block content %}
+<h2>Créer un compte</h2>
+<form method="post" class="form" id="register-form">
+    <label>Je suis :
+        <select name="role" onchange="toggleChauffeurFields(this.value)">
+            <option value="CLIENT">un client</option>
+            <option value="CHAUFFEUR">un chauffeur</option>
+        </select>
+    </label>
+
+    <label>Prénom <input type="text" name="prenom" required></label>
+    <label>Nom    <input type="text" name="nom"    required></label>
+    <label>Email  <input type="email" name="email" required></label>
+    <label>Téléphone <input type="tel" name="telephone" required></label>
+    <label>Mot de passe <input type="password" name="password" required minlength="6"></label>
+
+    <div id="chauffeur-fields" style="display:none;">
+        <label>N° de permis <input type="text" name="numero_permis"></label>
+        <label>Zone de service <input type="text" name="zone_service"></label>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Créer mon compte</button>
+</form>
+
+<script>
+function toggleChauffeurFields(role) {
+    document.getElementById('chauffeur-fields').style.display =
+        role === 'CHAUFFEUR' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

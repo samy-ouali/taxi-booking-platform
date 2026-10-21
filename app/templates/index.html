@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Accueil - TaxiRes{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Réservez un taxi, simplement.</h1>
+    <p>Entrez votre trajet, nous trouvons pour vous le meilleur chauffeur à proximité.</p>
+    <div class="cta">
+        <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Créer un compte</a>
+        <a class="btn" href="{{ url_for('auth.login') }}">Se connecter</a>
+    </div>
+</section>
+
+<section class="grid-3">
+    <div class="card">
+        <h3>1. Demande</h3>
+        <p>Départ, arrivée, horaire, nombre de passagers.</p>
+    </div>
+    <div class="card">
+        <h3>2. Recherche</h3>
+        <p>Les chauffeurs proches sont notifiés selon leur note, proximité et fiabilité.</p>
+    </div>
+    <div class="card">
+        <h3>3. Course</h3>
+        <p>Le premier chauffeur qui accepte devient votre conducteur.</p>
+    </div>
+</section>
+{% endblock %}

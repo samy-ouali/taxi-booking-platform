@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Espace chauffeur{% endblock %}
+{% block content %}
+<h2>Tableau de bord chauffeur</h2>
+
+<section>
+    <h3>Demandes en attente ({{ notifications|length }})</h3>
+    {% if notifications %}
+    <ul class="list-notifs">
+        {% for n in notifications %}
+        <li class="card">
+            <strong>Course #{{ n.id_course }}</strong>
+            - départ : {{ n.course.depart_adresse }} &rarr; {{ n.course.arrivee_adresse }}
+            - distance : {{ n.course.distance_estimee_km }} km
+            - {{ n.course.nb_personnes }} pers.
+            - prix estimé : {{ n.course.prix_estime }} €
+            - score : {{ n.score_selection }}%
+            <div class="actions">
+                <form method="post" action="{{ url_for('chauffeur.accepter', id_notification=n.id_notification) }}" style="display:inline;">
+                    <button class="btn btn-primary">Accepter</button>
+                </form>
+                <form method="post" action="{{ url_for('chauffeur.refuser', id_notification=n.id_notification) }}" style="display:inline;">
+                    <button class="btn">Refuser</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Aucune demande en attente.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h3>Mes courses en cours ({{ courses_en_cours|length }})</h3>
+    {% if courses_en_cours %}
+    <ul class="list-courses">
+    {% for c in courses_en_cours %}
+        <li class="card">
+            <strong>Course #{{ c.id_course }}</strong> - {{ c.statut }} - {{ c.depart_adresse }} &rarr; {{ c.arrivee_adresse }}
+            <div class="actions">
+                {% if c.statut == 'ATTRIBUEE' %}
+                <form method="post" action="{{ url_for('chauffeur.demarrer', id_course=c.id_course) }}" style="display:inline;">
+                    <button class="btn btn-primary">Démarrer la course</button>
+                </form>
+                {% elif c.statut == 'EN_COURS' %}
+                <form method="post" action="{{ url_for('chauffeur.terminer', id_course=c.id_course) }}" style="display:inline;">
+                    <button class="btn btn-primary">Terminer la course</button>
+                </form>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>Aucune course en cours.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+---
+title: Diagramme d'activité - Algorithme de matching
+---
+flowchart TD
+    A([Début : nouvelle course créée]) --> B[Charger chauffeurs statut=DISPONIBLE<br/>+ taxis dispo + catégorie]
+    B --> C{Boucle sur chaque chauffeur}
+    C -->|suivant| D{Taxi compatible ?<br/>capacité >= besoin}
+    D -->|Non| C
+    D -->|Oui| E[Calculer distance euclidienne<br/>taxi.pos -> course.depart]
+    E --> F{Distance <= rayon ?}
+    F -->|Non| C
+    F -->|Oui| G[Normaliser note : note/5]
+    G --> H[Normaliser proximité : 1 - d/rayon]
+    H --> I[Calculer fiabilité :<br/>0.7*acc + 0.3*1-ann]
+    I --> J[Score = 0.50*note<br/>+ 0.30*proximité<br/>+ 0.20*fiabilité]
+    J --> K[Ajouter Candidat à la liste]
+    K --> C
+    C -->|fin boucle| L{Liste vide ?}
+    L -->|Oui| M[Course = ECHEC]
+    L -->|Non| N[Trier par score décroissant]
+    N --> O[Créer NotificationDemande<br/>pour chaque candidat]
+    O --> P([Fin : course EN_RECHERCHE])
+    M --> P

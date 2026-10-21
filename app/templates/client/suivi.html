@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Suivi course #{{ course.id_course }}{% endblock %}
+{% block content %}
+<h2>Course #{{ course.id_course }}</h2>
+<p><span class="pill pill-{{ course.statut|lower }}">{{ course.statut }}</span></p>
+
+<dl class="infos">
+    <dt>Départ</dt><dd>{{ course.depart_adresse }}</dd>
+    <dt>Arrivée</dt><dd>{{ course.arrivee_adresse }}</dd>
+    <dt>Date souhaitée</dt><dd>{{ course.date_depart_souhaitee.strftime('%d/%m/%Y %H:%M') }}</dd>
+    <dt>Distance</dt><dd>{{ course.distance_estimee_km }} km</dd>
+    <dt>Passagers</dt><dd>{{ course.nb_personnes }} (+ {{ course.nb_bagages }} bagages)</dd>
+    <dt>Prix estimé</dt><dd>{{ course.prix_estime }} €</dd>
+    {% if course.prix_final %}<dt>Prix final</dt><dd>{{ course.prix_final }} €</dd>{% endif %}
+</dl>
+
+{% if course.statut == 'EN_RECHERCHE' %}
+    <p><em>Nous recherchons le meilleur chauffeur pour vous…</em></p>
+    <h3>Chauffeurs notifiés</h3>
+    <ul>
+    {% for n in course.notifications %}
+        <li>Chauffeur #{{ n.id_chauffeur }} - score {{ n.score_selection }}% - {{ n.reponse }}</li>
+    {% else %}
+        <li>Aucun chauffeur notifié.</li>
+    {% endfor %}
+    </ul>
+{% elif course.statut == 'TERMINEE' and course.evaluations|length == 0 %}
+    <h3>Noter votre chauffeur</h3>
+    <form method="post" action="{{ url_for('client.noter', id_course=course.id_course) }}" class="form">
+        <label>Note (1 à 5)
+            <input type="number" name="note" min="1" max="5" required>
+        </label>
+        <label>Commentaire (optionnel)
+            <textarea name="commentaire" maxlength="500"></textarea>
+        </label>
+        <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+{% endif %}
+
+<p><a href="{{ url_for('client.dashboard') }}">&larr; Retour à mes courses</a></p>
+{% endblock %}

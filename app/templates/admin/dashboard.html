@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Administration{% endblock %}
+{% block content %}
+<h2>Administration</h2>
+
+<section class="grid-3">
+    <div class="card"><strong>{{ stats.nb_clients }}</strong> clients</div>
+    <div class="card"><strong>{{ stats.nb_chauffeurs }}</strong> chauffeurs</div>
+    <div class="card"><strong>{{ stats.nb_chauffeurs_dispo }}</strong> chauffeurs dispo</div>
+    <div class="card"><strong>{{ stats.nb_courses_total }}</strong> courses au total</div>
+    <div class="card"><strong>{{ stats.nb_courses_terminees }}</strong> courses terminées</div>
+</section>
+
+<form method="post" action="{{ url_for('admin.recalculer_notes') }}">
+    <button class="btn">Recalculer les notes moyennes</button>
+</form>
+
+<h3>10 dernières courses</h3>
+<table class="table">
+    <thead>
+    <tr><th>#</th><th>Client</th><th>Chauffeur</th><th>Statut</th><th>Prix</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+    {% for c in dernieres_courses %}
+        <tr>
+            <td>{{ c.id_course }}</td>
+            <td>{{ c.id_client }}</td>
+            <td>{{ c.id_chauffeur or '—' }}</td>
+            <td><span class="pill pill-{{ c.statut|lower }}">{{ c.statut }}</span></td>
+            <td>{{ c.prix_estime }} €</td>
+            <td>{{ c.date_demande.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

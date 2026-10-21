@@ -1,0 +1,116 @@
+---
+title: Diagramme de classes - Système de réservation de taxi
+---
+classDiagram
+    direction LR
+
+    class Utilisateur {
+      +int id_utilisateur
+      +string nom
+      +string prenom
+      +string email
+      +string telephone
+      -string mot_de_passe_hash
+      +enum role
+      +decimal note_moyenne
+      +bool actif
+      +datetime created_at
+      +set_password(pwd)
+      +check_password(pwd) bool
+    }
+
+    class Client {
+      +int id_client
+      +enum preferences_paiement
+      +reserver_course(c) Course
+      +noter_chauffeur(c, note)
+    }
+
+    class Chauffeur {
+      +int id_chauffeur
+      +string numero_permis
+      +enum statut
+      +string zone_service
+      +decimal taux_acceptation
+      +decimal taux_annulation
+      +fiabilite() float
+      +accepter(notif)
+      +refuser(notif)
+    }
+
+    class Taxi {
+      +int id_taxi
+      +string immatriculation
+      +string marque_modele
+      +enum statut_disponibilite
+      +decimal latitude
+      +decimal longitude
+    }
+
+    class CategorieTaxi {
+      +int id_categorie
+      +string libelle
+      +int capacite_personnes
+      +int capacite_bagages
+      +decimal prix_base
+      +decimal tarif_km
+      +decimal supplement_personne
+      +decimal supplement_bagage
+    }
+
+    class TrancheTarif {
+      +int id_tranche
+      +string libelle
+      +time heure_debut
+      +time heure_fin
+      +decimal coefficient
+    }
+
+    class Course {
+      +int id_course
+      +string depart_adresse
+      +string arrivee_adresse
+      +decimal depart_lat
+      +decimal depart_lon
+      +decimal arrivee_lat
+      +decimal arrivee_lon
+      +decimal distance_estimee_km
+      +int nb_personnes
+      +int nb_bagages
+      +datetime date_demande
+      +datetime date_depart_souhaitee
+      +enum statut
+      +decimal prix_estime
+      +decimal prix_final
+      +demarrer()
+      +terminer()
+      +annuler()
+    }
+
+    class NotificationDemande {
+      +int id_notification
+      +datetime date_envoi
+      +enum reponse
+      +datetime date_reponse
+      +decimal score_selection
+    }
+
+    class Evaluation {
+      +int id_evaluation
+      +int note
+      +string commentaire
+      +datetime date_eval
+    }
+
+    Utilisateur <|-- Client : spécialisation
+    Utilisateur <|-- Chauffeur : spécialisation
+    Client "1" --> "0..*" Course : réserve
+    Chauffeur "0..1" --> "0..*" Course : effectue
+    Chauffeur "1" --> "1..*" Taxi : conduit
+    CategorieTaxi "1" --> "1..*" Taxi : classe
+    Course "1" --> "0..*" NotificationDemande : génère
+    NotificationDemande "0..*" --> "1" Chauffeur : cible
+    Course "1" --> "0..2" Evaluation : donne lieu à
+    Evaluation "1" --> "1" Utilisateur : auteur
+    Evaluation "1" --> "1" Utilisateur : cible
+    Course "0..*" --> "1" TrancheTarif : applique

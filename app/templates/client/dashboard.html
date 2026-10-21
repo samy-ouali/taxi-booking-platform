@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Mes courses{% endblock %}
+{% block content %}
+<h2>Mes courses</h2>
+<p><a class="btn btn-primary" href="{{ url_for('client.reserver') }}">+ Nouvelle réservation</a></p>
+
+{% if courses %}
+<table class="table">
+    <thead>
+        <tr><th>#</th><th>Départ</th><th>Arrivée</th><th>Date</th><th>Statut</th><th>Prix</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for c in courses %}
+        <tr>
+            <td>{{ c.id_course }}</td>
+            <td>{{ c.depart_adresse }}</td>
+            <td>{{ c.arrivee_adresse }}</td>
+            <td>{{ c.date_depart_souhaitee.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td><span class="pill pill-{{ c.statut|lower }}">{{ c.statut }}</span></td>
+            <td>{{ c.prix_estime }} €</td>
+            <td><a href="{{ url_for('client.suivi', id_course=c.id_course) }}">Suivi</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Aucune course pour l'instant.</p>
+{% endif %}
+{% endblock %}

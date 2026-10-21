@@ -1,0 +1,14 @@
+---
+title: Diagramme d'états - Cycle de vie d'une Course
+---
+stateDiagram-v2
+    [*] --> EN_RECHERCHE : Client soumet la demande
+    EN_RECHERCHE --> ATTRIBUEE : Un chauffeur accepte
+    EN_RECHERCHE --> ECHEC : Aucun chauffeur dispo
+    EN_RECHERCHE --> ANNULEE : Annulation par le client
+    ATTRIBUEE --> EN_COURS : Chauffeur démarre la course
+    ATTRIBUEE --> ANNULEE : Annulation (client ou chauffeur)
+    EN_COURS --> TERMINEE : Chauffeur termine la course
+    TERMINEE --> [*]
+    ANNULEE --> [*]
+    ECHEC --> [*]

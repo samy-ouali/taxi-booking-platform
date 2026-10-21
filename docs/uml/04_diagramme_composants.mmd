@@ -1,0 +1,29 @@
+---
+title: Diagramme de composants - Architecture client/serveur
+---
+flowchart LR
+    subgraph Client
+        NAV[Navigateur web]
+    end
+
+    subgraph Serveur ["Serveur Flask (Python)"]
+        direction TB
+        ROUTES[Blueprints<br/>auth / main / client /<br/>chauffeur / admin]
+        SERV[Services<br/>matching.py<br/>tarif.py<br/>geo.py]
+        ORM[Modèles SQLAlchemy<br/>Utilisateur, Course, Taxi...]
+        AUTH[Flask-Login<br/>session + bcrypt]
+        TMPL[Templates Jinja2]
+    end
+
+    subgraph BDD ["Base de données"]
+        MYSQL[(MySQL / phpMyAdmin)]
+    end
+
+    NAV -- HTTP/HTTPS --> ROUTES
+    ROUTES --> AUTH
+    ROUTES --> SERV
+    ROUTES --> ORM
+    ROUTES --> TMPL
+    TMPL -- HTML --> NAV
+    SERV --> ORM
+    ORM -- SQL --> MYSQL

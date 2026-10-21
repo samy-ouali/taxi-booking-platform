@@ -1,0 +1,45 @@
+---
+title: Diagramme de cas d'utilisation (complet - Checkpoint 2)
+---
+flowchart LR
+    classDef actor fill:#fff,stroke:#333,stroke-width:1px
+    classDef usecase fill:#fdecea,stroke:#c0392b,stroke-width:1px
+
+    CLI((Client)):::actor
+    CHA((Chauffeur)):::actor
+    ADM((Admin)):::actor
+    PAY[Système de paiement]:::actor
+    GPS[GPS / Map API]:::actor
+
+    UC1([Créer un compte]):::usecase
+    UC2([Se connecter]):::usecase
+    UC3([Réserver une course]):::usecase
+    UC4([Calculer un prix]):::usecase
+    UC5([Suivre une course]):::usecase
+    UC6([Noter un chauffeur]):::usecase
+    UC7([Recevoir une demande]):::usecase
+    UC8([Accepter / Refuser]):::usecase
+    UC9([Démarrer / Terminer]):::usecase
+    UC10([Consulter statistiques]):::usecase
+    UC11([Recalculer notes]):::usecase
+
+    CLI --- UC1
+    CLI --- UC2
+    CLI --- UC3
+    CLI --- UC5
+    CLI --- UC6
+
+    CHA --- UC1
+    CHA --- UC2
+    CHA --- UC7
+    CHA --- UC8
+    CHA --- UC9
+
+    ADM --- UC2
+    ADM --- UC10
+    ADM --- UC11
+
+    UC3 -.->|include| UC4
+    UC3 -.->|include| UC7
+    UC4 -.->|utilise| GPS
+    UC9 -.->|utilise| PAY

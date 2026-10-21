@@ -1,0 +1,51 @@
+---
+title: Diagramme de séquence - Réservation et matching
+---
+sequenceDiagram
+    autonumber
+    actor Cli as Client
+    participant UI  as Interface Web (Flask)
+    participant APP as Application Flask
+    participant MATCH as Service Matching
+    participant TARIF as Service Tarif
+    participant DB  as BDD MySQL
+    actor Chau as Chauffeur
+
+    Cli ->> UI : Saisit trajet + détails
+    UI ->> APP : POST /client/reserver
+    APP ->> TARIF : calculer_prix_estime(...)
+    TARIF -->> APP : prix, tranche
+    APP ->> DB : INSERT course (EN_RECHERCHE)
+    DB -->> APP : id_course
+
+    APP ->> MATCH : chercher_candidats(course)
+    MATCH ->> DB : SELECT chauffeurs + taxis dispo
+    DB -->> MATCH : liste brute
+    MATCH ->> MATCH : filtrer (rayon, capacité)
+    MATCH ->> MATCH : scorer (note, proximité, fiabilité)
+    MATCH -->> APP : candidats triés
+
+    alt Aucun candidat
+        APP ->> DB : UPDATE course.statut = ECHEC
+        APP -->> UI : message d'erreur
+    else Au moins un candidat
+        APP ->> MATCH : notifier_candidats(course, candidats)
+        MATCH ->> DB : INSERT notifications EN_ATTENTE
+        APP -->> UI : redirection suivi
+    end
+
+    Chau ->> UI : Consulte dashboard
+    UI ->> APP : GET /chauffeur/dashboard
+    APP ->> DB : SELECT notifications EN_ATTENTE
+    DB -->> APP : notifications
+    APP -->> UI : rendu dashboard
+
+    Chau ->> UI : Clic "Accepter"
+    UI ->> APP : POST /chauffeur/notification/X/accepter
+    APP ->> MATCH : attribuer_course(course, id_chauffeur)
+    MATCH ->> DB : UPDATE course.statut = ATTRIBUEE
+    MATCH ->> DB : UPDATE taxi + chauffeur = OCCUPE
+    MATCH ->> DB : UPDATE notifs autres = EXPIREE
+    MATCH -->> APP : succès
+    APP -->> UI : confirmation
+    UI -->> Chau : "Course acceptée"
